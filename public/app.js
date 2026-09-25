@@ -7,6 +7,7 @@
   const els = {
     levelNav: document.getElementById('levelNav'),
     progressText: document.getElementById('progressText'),
+    progressFill: document.getElementById('progressFill'),
     resetProgressBtn: document.getElementById('resetProgressBtn'),
     levelEyebrow: document.getElementById('levelEyebrow'),
     levelTitle: document.getElementById('levelTitle'),
@@ -41,18 +42,18 @@
     lineHeight: 1.2,
     scrollback: 5000,
     theme: {
-      background: '#050806',
-      foreground: '#e7eee8',
-      cursor: '#8cff98',
-      cursorAccent: '#050806',
-      selectionBackground: '#34563b',
-      black: '#0a0d0b',
-      brightBlack: '#687168',
-      green: '#8cff98',
-      brightGreen: '#a9ffb1',
-      yellow: '#ffd166',
-      brightYellow: '#ffe29b',
-      red: '#ff8a8a',
+      background: '#080d12',
+      foreground: '#ecf3f0',
+      cursor: '#b5f26b',
+      cursorAccent: '#080d12',
+      selectionBackground: '#345d42',
+      black: '#090e13',
+      brightBlack: '#738187',
+      green: '#b5f26b',
+      brightGreen: '#cbff91',
+      yellow: '#ffd283',
+      brightYellow: '#ffe3ad',
+      red: '#ff9b9b',
       brightRed: '#ffadad',
       blue: '#8fb8ff',
       brightBlue: '#b2ceff',
@@ -60,7 +61,7 @@
       brightCyan: '#a3ffff',
       magenta: '#d5a6ff',
       brightMagenta: '#e6c8ff',
-      white: '#e7eee8',
+      white: '#ecf3f0',
       brightWhite: '#ffffff',
     },
   });
@@ -112,7 +113,9 @@
       button.type = 'button';
       button.className = 'level-button';
       if (level.id === currentLevelId) button.classList.add('active');
+      if (level.id === currentLevelId) button.setAttribute('aria-current', 'step');
       if (completed.has(level.id)) button.classList.add('complete');
+      button.setAttribute('aria-label', level.label + (completed.has(level.id) ? ', complete' : ''));
 
       const number = document.createElement('span');
       number.className = 'level-number';
@@ -128,6 +131,7 @@
 
     const challengeCount = [...completed].filter((id) => id >= 1 && id <= 33).length;
     els.progressText.textContent = `${challengeCount} / 33 challenges`;
+    els.progressFill.style.width = `${Math.round(challengeCount / 33 * 100)}%`;
   }
 
   function renderCommands(level) {
