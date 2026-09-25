@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A beginner-friendly browser SSH terminal and level guide for OverTheWire Bandit.">
+  <title>Bandit Learning Terminal</title>
+  <link rel="stylesheet" href="/vendor/xterm/css/xterm.css">
+  <link rel="stylesheet" href="/style-a.css">
+  <link rel="stylesheet" href="/style-b.css">
+  <link rel="stylesheet" href="/style-c.css">
+  <link rel="stylesheet" href="/style-d.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">&gt;_</div>
+      <div>
+        <strong>Bandit Learning Terminal</strong>
+        <span>real SSH · beginner guide · no local install</span>
+      </div>
+    </div>
+    <div class="server-pill" title="This site can only connect to the official Bandit SSH service.">
+      <span class="dot"></span>
+      bandit.labs.overthewire.org:2220
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="level-sidebar" aria-label="Bandit levels">
+      <div class="sidebar-head">
+        <div>
+          <span class="eyebrow">Progress</span>
+          <strong id="progressText">0 / 33 challenges</strong>
+        </div>
+        <button id="resetProgressBtn" class="text-button" type="button">Reset</button>
+      </div>
+      <nav id="levelNav" class="level-nav"></nav>
+    </aside>
+
+    <section class="workspace">
+      <div class="guide-card">
+        <div class="guide-heading">
+          <div>
+            <span class="eyebrow" id="levelEyebrow">Getting started</span>
+            <h1 id="levelTitle">Level 0 — Connect to Bandit</h1>
+          </div>
+          <a id="sourceLink" class="source-link" href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noreferrer">
+            Original level ↗
+          </a>
+        </div>
+
+        <p id="levelGoal" class="goal"></p>
+        <div id="levelNote" class="level-note" hidden></div>
+
+        <div class="learning-grid">
+          <section>
+            <h2>Skills in this level</h2>
+            <div id="conceptList" class="concept-list"></div>
+          </section>
+          <section>
+            <h2>Commands you may need</h2>
+            <div id="commandList" class="command-list"></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="terminal-card" aria-label="SSH terminal">
+        <div class="terminal-toolbar">
+          <div class="connection-form">
+            <label>
+              <span>Connect as</span>
+              <input id="usernameInput" type="text" readonly value="bandit0">
+            </label>
+            <label class="password-label">
+              <span>Password</span>
+              <div class="password-wrap">
+                <input id="passwordInput" type="password" autocomplete="off" spellcheck="false" placeholder="Enter Bandit password">
+                <button id="togglePasswordBtn" type="button" aria-label="Show password">Show</button>
+              </div>
+            </label>
+            <button id="connectBtn" class="primary-button" type="button">Connect</button>
+            <button id="disconnectBtn" class="secondary-button" type="button" disabled>Disconnect</button>
+          </div>
+          <div id="connectionStatus" class="connection-status" data-state="offline">
+            <span class="status-dot"></span>
+            <span id="statusText">Not connected</span>
+          </div>
+        </div>
+
+        <div class="terminal-help">
+          <span><kbd>Enter</kbd> runs a command</span>
+          <span><kbd>↑</kbd> recalls the previous command</span>
+          <span><kbd>Tab</kbd> can autocomplete</span>
+          <span>Passwords may be invisible when typed inside SSH</span>
+        </div>
+
+        <div id="terminal" class="terminal"></div>
+
+        <div class="terminal-footer">
+          <div class="privacy-note">
+            Passwords are sent only to this server to open the live SSH connection. They are not saved by the site.
+          </div>
+          <button id="completeBtn" class="complete-button" type="button">Mark challenge complete ✓</button>
+        </div>
+      </section>
+
+      <details class="basics-card">
+        <summary>New to Linux? Start with these five ideas</summary>
+        <div class="basics-grid">
+          <article><code>pwd</code><strong>Where am I?</strong><p>Prints the directory you are currently working in.</p></article>
+          <article><code>ls</code><strong>What is here?</strong><p>Lists files and folders. Try its manual to discover options.</p></article>
+          <article><code>cd</code><strong>Move around</strong><p>Changes directory. <code>cd ..</code> moves up one level.</p></article>
+          <article><code>cat</code><strong>Read a file</strong><p>Prints the contents of a text file to the terminal.</p></article>
+          <article><code>man</code><strong>Ask Linux for help</strong><p>For example, <code>man ls</code>. Press <kbd>q</kbd> to leave a manual page.</p></article>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="/vendor/xterm/lib/xterm.js"></script>
+  <script src="/vendor/fit/lib/addon-fit.js"></script>
+  <script src="/levels-a.js"></script>
+  <script src="/levels-b.js"></script>
+  <script src="/levels-c.js"></script>
+  <script src="/levels-d.js"></script>
+  <script src="/commands.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

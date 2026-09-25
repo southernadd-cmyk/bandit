@@ -1,0 +1,22 @@
+{
+  "name": "bandit-learning-terminal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A beginner-friendly browser SSH client and learning guide for OverTheWire Bandit.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "ssh2": "^1.17.0",
+    "ws": "^8.18.3"
+  }
+}

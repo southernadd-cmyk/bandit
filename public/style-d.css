@@ -1,0 +1,46 @@
+
+.complete-button.done { background: var(--green); color: #071008; border-color: var(--green); }
+
+.basics-card { padding: 0; overflow: hidden; }
+.basics-card summary { cursor: pointer; padding: 16px 18px; font-weight: 800; font-size: 13px; color: #dbe2dc; }
+.basics-card[open] summary { border-bottom: 1px solid var(--line); }
+.basics-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); }
+.basics-grid article { background: var(--panel); padding: 16px; min-height: 150px; }
+.basics-grid article > code { display: inline-block; color: var(--green); background: #0a100b; border: 1px solid #2a3a2d; border-radius: 6px; padding: 4px 7px; margin-bottom: 12px; }
+.basics-grid strong { display: block; font-size: 13px; }
+.basics-grid p { color: var(--muted); font-size: 11px; line-height: 1.5; margin-bottom: 0; }
+
+.toast-region { position: fixed; right: 18px; bottom: 18px; z-index: 50; display: grid; gap: 8px; width: min(360px, calc(100vw - 36px)); }
+.toast { border: 1px solid var(--line); background: #151b16; color: #dce2dd; border-radius: 10px; padding: 11px 13px; box-shadow: var(--shadow); font-size: 12px; animation: toast-in .16s ease-out; }
+.toast.error { border-color: #5a3434; color: #ffd0d0; }
+@keyframes toast-in { from { transform: translateY(7px); opacity: 0; } }
+
+@media (max-width: 1050px) {
+  .app-shell { grid-template-columns: 160px minmax(0,1fr); }
+  .workspace { padding: 20px; }
+  .learning-grid { grid-template-columns: 1fr; }
+  .basics-grid { grid-template-columns: repeat(2, 1fr); }
+  .terminal-toolbar { align-items: start; flex-direction: column; }
+  .connection-status { justify-content: flex-start; padding: 0; }
+}
+
+@media (max-width: 760px) {
+  .topbar { height: auto; min-height: 64px; padding: 11px 14px; }
+  .server-pill { display: none; }
+  .app-shell { display: block; }
+  .level-sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 10px 12px; overflow-x: auto; }
+  .sidebar-head { display: none; }
+  .level-nav { display: flex; width: max-content; }
+  .level-button { width: auto; }
+  .level-button span:last-child { display: none; }
+  .workspace { padding: 12px; }
+  .guide-card { padding: 17px; }
+  .guide-heading { display: block; }
+  .source-link { display: inline-block; margin-top: 12px; }
+  .connection-form { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .connection-form label, .password-wrap, #passwordInput, #usernameInput { width: 100%; }
+  .terminal { height: 52vh; min-height: 330px; }
+  .terminal-help { display: none; }
+  .terminal-footer { align-items: start; flex-direction: column; }
+  .basics-grid { grid-template-columns: 1fr; }
+}
