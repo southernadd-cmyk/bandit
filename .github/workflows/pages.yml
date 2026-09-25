@@ -39,8 +39,8 @@ jobs:
           cp node_modules/@xterm/addon-fit/lib/addon-fit.js dist/vendor/fit/lib/addon-fit.js
           cat > dist/config.js <<'EOF'
           window.BANDIT_CONFIG = {
-            mode: 'disabled',
-            backendUrl: ''
+            mode: 'remote',
+            backendUrl: 'https://bandit-backend-production.up.railway.app'
           };
           EOF
           touch dist/.nojekyll
