@@ -1,6 +1,7 @@
 (() => {
   const levels = window.BANDIT_LEVELS || [];
   const commandInfo = window.COMMAND_INFO || {};
+  const config = window.BANDIT_CONFIG || { mode: 'same-origin' };
   const STORAGE_KEY = 'bandit-learning-progress-v1';
 
   const els = {
@@ -24,6 +25,7 @@
     terminal: document.getElementById('terminal'),
     completeBtn: document.getElementById('completeBtn'),
     toastRegion: document.getElementById('toastRegion'),
+    hostingNotice: document.getElementById('hostingNotice'),
   };
 
   let currentLevelId = 0;
@@ -231,7 +233,24 @@
     if (!quiet) toast('Disconnected from Bandit.');
   }
 
+  function buildSocketUrl() {
+    if (config.backendUrl) {
+      const backend = new URL(config.backendUrl, location.href);
+      backend.protocol = backend.protocol === 'https:' ? 'wss:' : 'ws:';
+      backend.pathname = `${backend.pathname.replace(/\/$/, '')}/ssh`;
+      backend.search = '';
+      backend.hash = '';
+      return backend.toString();
+    }
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${protocol}//${location.host}/ssh`;
+  }
+
   function connect() {
+    if (config.mode === 'disabled') {
+      toast('The GitHub Pages preview is guide-only. Live SSH needs the hosted Node gateway.', 'error');
+      return;
+    }
     if (socket && socket.readyState <= WebSocket.OPEN) {
       disconnect({ quiet: true });
     }
@@ -245,8 +264,7 @@
       return;
     }
 
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    socket = new WebSocket(`${protocol}//${location.host}/ssh`);
+    socket = new WebSocket(buildSocketUrl());
 
     els.connectBtn.disabled = true;
     els.disconnectBtn.disabled = false;
@@ -372,4 +390,15 @@
 
   renderNav();
   selectLevel(0);
+
+  if (config.mode === 'disabled') {
+    els.hostingNotice.hidden = false;
+    els.hostingNotice.textContent = 'GitHub Pages preview: the level guide and command references work here, but live SSH requires the Node gateway. The terminal will be enabled when this frontend is pointed at that backend.';
+    els.connectBtn.disabled = true;
+    els.disconnectBtn.disabled = true;
+    els.passwordInput.disabled = true;
+    els.togglePasswordBtn.disabled = true;
+    setStatus('offline', 'Guide-only preview');
+    terminal.writeln('\x1b[1;33mGitHub Pages preview: live SSH is currently disabled.\x1b[0m');
+  }
 })();
