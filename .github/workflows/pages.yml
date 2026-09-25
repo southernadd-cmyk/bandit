@@ -1,0 +1,65 @@
+name: Deploy GitHub Pages preview
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: Install browser terminal dependencies
+        run: npm install --ignore-scripts
+
+      - name: Build static preview
+        run: |
+          mkdir -p dist
+          cp -R public/. dist/
+          mkdir -p dist/vendor/xterm/css dist/vendor/xterm/lib dist/vendor/fit/lib
+          cp node_modules/@xterm/xterm/css/xterm.css dist/vendor/xterm/css/xterm.css
+          cp node_modules/@xterm/xterm/lib/xterm.js dist/vendor/xterm/lib/xterm.js
+          cp node_modules/@xterm/addon-fit/lib/addon-fit.js dist/vendor/fit/lib/addon-fit.js
+          cat > dist/config.js <<'EOF'
+          window.BANDIT_CONFIG = {
+            mode: 'disabled',
+            backendUrl: ''
+          };
+          EOF
+          touch dist/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
