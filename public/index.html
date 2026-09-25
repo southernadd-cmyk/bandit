@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A beginner-friendly browser SSH terminal and level guide for OverTheWire Bandit.">
   <title>Bandit Learning Terminal</title>
-  <link rel="stylesheet" href="/vendor/xterm/css/xterm.css">
-  <link rel="stylesheet" href="/style-a.css">
-  <link rel="stylesheet" href="/style-b.css">
-  <link rel="stylesheet" href="/style-c.css">
-  <link rel="stylesheet" href="/style-d.css">
+  <link rel="stylesheet" href="./vendor/xterm/css/xterm.css">
+  <link rel="stylesheet" href="./style-a.css">
+  <link rel="stylesheet" href="./style-b.css">
+  <link rel="stylesheet" href="./style-c.css">
+  <link rel="stylesheet" href="./style-d.css">
 </head>
 <body>
   <header class="topbar">
@@ -66,6 +66,7 @@
       </div>
 
       <section class="terminal-card" aria-label="SSH terminal">
+        <div id="hostingNotice" class="level-note" hidden></div>
         <div class="terminal-toolbar">
           <div class="connection-form">
             <label>
@@ -120,13 +121,14 @@
 
   <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
-  <script src="/vendor/xterm/lib/xterm.js"></script>
-  <script src="/vendor/fit/lib/addon-fit.js"></script>
-  <script src="/levels-a.js"></script>
-  <script src="/levels-b.js"></script>
-  <script src="/levels-c.js"></script>
-  <script src="/levels-d.js"></script>
-  <script src="/commands.js"></script>
-  <script src="/app.js"></script>
+  <script src="./vendor/xterm/lib/xterm.js"></script>
+  <script src="./vendor/fit/lib/addon-fit.js"></script>
+  <script src="./config.js"></script>
+  <script src="./levels-a.js"></script>
+  <script src="./levels-b.js"></script>
+  <script src="./levels-c.js"></script>
+  <script src="./levels-d.js"></script>
+  <script src="./commands.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
