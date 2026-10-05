@@ -86,3 +86,9 @@ Special cases are called out in the guide, including:
 ## Attribution
 
 Bandit is created and operated by [OverTheWire](https://overthewire.org/). This project is an independent classroom front end and is not affiliated with or endorsed by OverTheWire.
+
+## Deploy backend on Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/southernadd-cmyk/bandit)
+
+The backend is defined by `render.yaml`. Use the Free plan. After deployment, set the GitHub repository variable `BANDIT_BACKEND_URL` to the Render service URL (for example `https://bandit-backend.onrender.com`) and rerun the Pages workflow.
