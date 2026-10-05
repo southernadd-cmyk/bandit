@@ -37,7 +37,7 @@ jobs:
           cp node_modules/@xterm/xterm/css/xterm.css dist/vendor/xterm/css/xterm.css
           cp node_modules/@xterm/xterm/lib/xterm.js dist/vendor/xterm/lib/xterm.js
           cp node_modules/@xterm/addon-fit/lib/addon-fit.js dist/vendor/fit/lib/addon-fit.js
-          BACKEND_URL="${{ vars.BANDIT_BACKEND_URL || 'https://bandit-backend-production.up.railway.app' }}"
+          BACKEND_URL="${{ vars.BANDIT_BACKEND_URL || 'https://bandit-backend-6g7w.onrender.com' }}"
           cat > dist/config.js <<EOF
           window.BANDIT_CONFIG = {
             mode: 'remote',
