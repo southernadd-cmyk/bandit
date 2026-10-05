@@ -37,10 +37,11 @@ jobs:
           cp node_modules/@xterm/xterm/css/xterm.css dist/vendor/xterm/css/xterm.css
           cp node_modules/@xterm/xterm/lib/xterm.js dist/vendor/xterm/lib/xterm.js
           cp node_modules/@xterm/addon-fit/lib/addon-fit.js dist/vendor/fit/lib/addon-fit.js
-          cat > dist/config.js <<'EOF'
+          BACKEND_URL="${{ vars.BANDIT_BACKEND_URL || 'https://bandit-backend-production.up.railway.app' }}"
+          cat > dist/config.js <<EOF
           window.BANDIT_CONFIG = {
             mode: 'remote',
-            backendUrl: 'https://bandit-backend-production.up.railway.app'
+            backendUrl: '${BACKEND_URL}'
           };
           EOF
           touch dist/.nojekyll
