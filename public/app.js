@@ -33,6 +33,10 @@
   let socket = null;
   let connected = false;
   let fitTimer = null;
+  let connectAttempt = 0;
+  let retryTimer = null;
+  const MAX_CONNECT_ATTEMPTS = 12;
+  const RETRY_DELAY_MS = 5000;
 
   const terminal = new Terminal({
     cursorBlink: true,
@@ -223,6 +227,11 @@
   }
 
   function disconnect({ quiet = false } = {}) {
+    if (retryTimer) {
+      clearTimeout(retryTimer);
+      retryTimer = null;
+    }
+    connectAttempt = 0;
     if (socket) {
       try { socket.close(1000, 'Student disconnected'); } catch {}
     }
@@ -250,17 +259,18 @@
     return `${protocol}//${location.host}/ssh`;
   }
 
-  function connect() {
+  function connect({ retry = false, username: retryUsername = '', password: retryPassword = '' } = {}) {
     if (config.mode === 'disabled') {
       toast('The GitHub Pages preview is guide-only. Live SSH needs the hosted Node gateway.', 'error');
       return;
     }
-    if (socket && socket.readyState <= WebSocket.OPEN) {
+
+    if (!retry && socket && socket.readyState <= WebSocket.OPEN) {
       disconnect({ quiet: true });
     }
 
-    const password = els.passwordInput.value;
-    const username = els.usernameInput.value;
+    const password = retry ? retryPassword : els.passwordInput.value;
+    const username = retry ? retryUsername : els.usernameInput.value;
 
     if (!password) {
       toast('Enter the password for this level.', 'error');
@@ -268,16 +278,28 @@
       return;
     }
 
+    if (!retry) connectAttempt = 0;
+    connectAttempt += 1;
+
     socket = new WebSocket(buildSocketUrl());
 
     els.connectBtn.disabled = true;
     els.disconnectBtn.disabled = false;
     els.passwordInput.disabled = true;
     els.usernameInput.disabled = true;
-    setStatus('connecting', `Connecting as ${username}…`);
+
+    if (connectAttempt === 1) {
+      setStatus('connecting', `Connecting as ${username}…`);
+    } else {
+      setStatus('connecting', `Starting Bandit server… retry ${connectAttempt} of ${MAX_CONNECT_ATTEMPTS}`);
+    }
     terminal.focus();
 
+    let opened = false;
+    let receivedGatewayMessage = false;
+
     socket.addEventListener('open', () => {
+      opened = true;
       fitAddon.fit();
       socket.send(JSON.stringify({
         type: 'connect',
@@ -290,6 +312,7 @@
     });
 
     socket.addEventListener('message', (event) => {
+      receivedGatewayMessage = true;
       let message;
       try { message = JSON.parse(event.data); } catch { return; }
 
@@ -300,6 +323,7 @@
 
       if (message.type === 'ready') {
         connected = true;
+        connectAttempt = 0;
         setStatus('online', `Connected as ${message.username}`);
         toast(`Connected to Bandit as ${message.username}.`);
         terminal.focus();
@@ -314,6 +338,7 @@
       }
 
       if (message.type === 'error') {
+        connectAttempt = 0;
         setStatus('error', message.message);
         toast(message.message, 'error');
       }
@@ -322,19 +347,38 @@
     socket.addEventListener('close', () => {
       connected = false;
       socket = null;
+
+      const likelySleeping = !receivedGatewayMessage && connectAttempt > 0 && connectAttempt < MAX_CONNECT_ATTEMPTS;
+      if (likelySleeping) {
+        setStatus('connecting', 'Starting Bandit server… this can take up to 60 seconds.');
+        if (connectAttempt === 1) {
+          terminal.writeln('\r\n\x1b[1;33mBandit server is waking up. This can take up to 60 seconds; reconnecting automatically…\x1b[0m');
+        }
+        retryTimer = setTimeout(() => {
+          retryTimer = null;
+          connect({ retry: true, username, password });
+        }, RETRY_DELAY_MS);
+        return;
+      }
+
       els.connectBtn.disabled = false;
       els.disconnectBtn.disabled = true;
       els.passwordInput.disabled = false;
       els.usernameInput.disabled = false;
-      els.passwordInput.value = '';
-      if (els.connectionStatus.dataset.state !== 'error') {
+
+      if (!receivedGatewayMessage && connectAttempt >= MAX_CONNECT_ATTEMPTS) {
+        connectAttempt = 0;
+        setStatus('error', 'Bandit server did not start. Please try again.');
+        toast('The Bandit server could not be reached after about a minute. Please try again.', 'error');
+      } else if (els.connectionStatus.dataset.state !== 'error') {
         setStatus('offline', 'Not connected');
       }
     });
 
     socket.addEventListener('error', () => {
-      setStatus('error', 'WebSocket connection failed.');
-      toast('The browser could not reach the SSH gateway. Check the deployment and WebSocket support.', 'error');
+      if (connectAttempt === 1 && !opened) {
+        setStatus('connecting', 'Starting Bandit server… this can take up to 60 seconds.');
+      }
     });
   }
 
